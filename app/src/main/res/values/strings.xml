@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Know Your Brew</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+    <string name="label_btn_find">Search</string>
+    <string name="label_btn_view_all">View All</string>
+
+    <string name="nav_item_home">Home</string>
+    <string name="nav_item_find_nearby">Find Nearby</string>
+    <string name="nav_item_explore_flavors">Explore Flavors</string>
+    <string name="nav_item_deals">Deals</string>
+    <string name="nav_item_whats_hot">Whats Hot</string>
+
+
+    <!-- navigation drawer item labels -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_home</item>
+        <item>@string/nav_item_find_nearby</item>
+        <item>@string/nav_item_explore_flavors</item>
+        <item>@string/nav_item_deals</item>
+        <item>@string/nav_item_whats_hot</item>
+    </string-array>
+
+
+    <string name="title_home">Home</string>
+    <string name="title_find_nearby">Find Nearby</string>
+    <string name="title_explore_flavors">Explore Flavors</string>
+    <string name="title_deals">Deals</string>
+    <string name="title_whats_hot">Whats Hot</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_maps">Map</string>
+
+
+        <string name="cardview_contents">This is a CardView widget. CardView widgets can have
+        shadows and rounded corners.
+        \n\nTo create a card with a shadow, use the <font fgcolor="#FFFFFFFF">android:elevation</font>
+        attribute.
+        \n\nTo set the corner radius in your layouts, use the <font
+                fgcolor="#FFFFFFFF">card_view:cardCornerRadius</font> attribute.
+    </string>
+    <string name="cardview_radius_seekbar_text">Radius</string>
+    <string name="cardview_elevation_seekbar_text">Elevation</string>
+
+    <string name="ok">OK</string>
+    <string name="permission_location_rationale">Location permission is needed to show the nearest cafes.</string>
+    <string name="permision_available_location">Location Permissions have been granted. Contacts screen can now be opened.</string>
+    <string name="permissions_not_granted">Permissions were not granted.</string>
+
+</resources>
