@@ -29,20 +29,6 @@ public class MapList extends Fragment {
     MapListAdapter adapter;
     RecyclerView recyclerView;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment NotificationFragment.
-     */
-    /*public static MapList newInstance() {
-        MapList fragment = new MapList();
-        fragment.setRetainInstance(true);
-        return fragment;
-    }*/
-
-
-
     public MapList() {
         // Required empty public constructor
     }
@@ -65,7 +51,6 @@ public class MapList extends Fragment {
         //RecyclerView needs a LayoutManager to manage the positioning of its items.
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
-        //Recycler view created, now what for main2's asynctask to return data before call to getData()
         //adapter = new MapListAdapter(this.getActivity(), getData()); //TODO: write get data func
         //recyclerView.setAdapter(adapter);
 
@@ -73,7 +58,7 @@ public class MapList extends Fragment {
     }
 
 
-    public List<PlaceItem> getData() {
+   /* public List<PlaceItem> getData() {
         List<PlaceItem> data = new ArrayList<>();
         List<HashMap<String, String>> googlePlaceList;
 
@@ -100,7 +85,7 @@ public class MapList extends Fragment {
             data.add(placeItem);
         }
         return data;
-    }
+    } */
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -111,9 +96,5 @@ public class MapList extends Fragment {
 
     }
 
-    public void setAdapterData() {
-        //Recycler view created, now wait for main2's asynctask to return data before call to getData()
-        adapter = new MapListAdapter(this.getActivity(), getData()); //TODO: write get data func
-        recyclerView.setAdapter(adapter);
-    }
+
 }

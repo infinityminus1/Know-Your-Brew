@@ -46,7 +46,7 @@ import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 
 
 public class Map extends Fragment
-    implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener, LocationListener, ReadResponse {
+    implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
 
     protected GoogleApiClient mGoogleApiClient; //Provides the entry point to Google Play services.
@@ -55,7 +55,7 @@ public class Map extends Fragment
     GoogleMap mMap; // Might be null if Google Play services APK is not available
     double latitude = 0;
     double longitude = 0;
-    private int PROXIMITY_RADIUS = 500;
+    private int PROXIMITY_RADIUS = 5000;
     private static final String GOOGLE_API_KEY = "AIzaSyAq9qqBbHYqKUs0EmX6-VQjyAwD97g8uK0";
     public static final String TYPE_CAFE = "cafe";
 
@@ -85,10 +85,7 @@ public class Map extends Fragment
                 findCafesJson();
                 //TODO: might not need this button or switch to "Search Here" if map is not centered at user location
             }
-
-
         });
-
 
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
         // API.
@@ -119,22 +116,15 @@ public class Map extends Fragment
         if (ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap = googleMap;
-            googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(32.7150, 117.1625)) //San Diego
-                    .title("San Diego"));
-            mMap.setMyLocationEnabled(true);
         } else {
             // Show rationale and request permission.
         }
 
         mMap = googleMap;
-        googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(32.7150, 117.1625)) //San Diego
+        mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(32.7150, -117.1625)) //San Diego
                 .title("San Diego"));
 
-        mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(10, 10))
-                .title("Hello world"));
 
         googleMap.setMyLocationEnabled(true);
 
@@ -155,23 +145,25 @@ public class Map extends Fragment
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
         }
-        //setMarkers(((Main2Activity)this.getActivity()).getGooglePlacesList()); //get data(is data ready?) from main2 and code from PlacesDisplayTask....
+
+        findCafesJson();
+        //setMarkers(((Main2Activity)this.getActivity()).getGooglePlacesList(), mMap); //get data(is data ready?) from main2 and code from PlacesDisplayTask....
 
     }
 
-    /* Returned value when AsyncTask is done. */
-    @Override
-    public void processFinish(List<HashMap<String, String>> output) {
-        setMarkers(output);
-    }
+//    /* Returned value when AsyncTask is done. */
+//    @Override
+//    public void processFinish(List<HashMap<String, String>> output) {
+//        setMarkers(output);
+//    }
 
 
     //called from main2 after asyncTask is done.
-    public void setMarkers(List<HashMap<String, String>> list){
+    public void setMarkers(List<HashMap<String, String>> list, GoogleMap googleMap){
 
         /*List<HashMap<String, String>> list = ((Main2Activity)this.getActivity()).getGooglePlacesList();*/
 
-        //mMap.clear();
+        this.mMap.clear();
         for (int i = 0; i < list.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
             HashMap<String, String> googlePlace = list.get(i);
@@ -185,7 +177,7 @@ public class Map extends Fragment
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
             markerOptions.title(PlaceID + placeName + " : " + vicinity);
-            mMap.addMarker(markerOptions);
+            this.mMap.addMarker(markerOptions);
         }
 
     }
