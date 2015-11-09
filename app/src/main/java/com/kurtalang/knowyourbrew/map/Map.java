@@ -7,6 +7,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -23,11 +25,14 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
-import android.support.v4.app.Fragment;
+
 
 import android.os.Bundle;
+import android.app.Fragment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +41,7 @@ import android.widget.Button;
 
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.kurtalang.knowyourbrew.activity.Main2Activity;
 
 import java.util.HashMap;
@@ -46,12 +51,11 @@ import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 
 
 public class Map extends Fragment
-    implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
+        implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
-
+    private MapFragment mMapFragment;
     protected GoogleApiClient mGoogleApiClient; //Provides the entry point to Google Play services.
     protected Location mLastLocation; //Represents a geographical location.
-    SupportMapFragment mMapFragment;
     GoogleMap mMap; // Might be null if Google Play services APK is not available
     double latitude = 0;
     double longitude = 0;
@@ -73,10 +77,21 @@ public class Map extends Fragment
 
         Button btnFind = (Button) rootView.findViewById(R.id.btnFind);
 
+        mMapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mMapFragment.getMapAsync(this);
+
+        /*mMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_frag);
+        if (mMapFragment == null) {
+            System.out.println("***********MappFragg NULLLLLL!!!!");
+        }
+        mMapFragment.getMapAsync(this);
+
+
         FragmentManager fm = getChildFragmentManager();
         mMapFragment =  SupportMapFragment.newInstance();
         mMapFragment.getMapAsync(this);
         fm.beginTransaction().replace(R.id.map, mMapFragment).commit();
+        */
 
         btnFind.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,12 +128,11 @@ public class Map extends Fragment
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        if (ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mMap = googleMap;
-        } else {
-            // Show rationale and request permission.
-        }
+        System.out.println("**********OnMapReadu!!!!!!!!!!!!!!!!!!");
+        System.out.println("**********OnMapReadu!!!!!!!!!!!!!!!!!!");
+        System.out.println("**********OnMapReadu!!!!!!!!!!!!!!!!!!");
+        System.out.println("**********OnMapReadu!!!!!!!!!!!!!!!!!!");
+
 
         mMap = googleMap;
         mMap.addMarker(new MarkerOptions()
@@ -131,6 +145,16 @@ public class Map extends Fragment
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         String bestProvider = locationManager.getBestProvider(criteria, true);
+        if (ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         Location location = locationManager.getLastKnownLocation(bestProvider);
         if (location != null) {
             onLocationChanged(location);

@@ -2,7 +2,7 @@ package com.kurtalang.knowyourbrew.map;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -64,7 +64,7 @@ public class MapList extends Fragment {
 
         googlePlaceList = ((Main2Activity)this.getActivity()).getGooglePlacesList();
 
-        //TODO: googlePlaceList might be null bc of AsyncTask not finishing...
+        //TODO: googlePlaceIdList might be null bc of AsyncTask not finishing...
 
 
         // Parse through googlePlaceList and prepare data
@@ -91,10 +91,5 @@ public class MapList extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mCardView = (CardView) view.findViewById(R.id.cardview);
-
-
-
     }
-
-
 }

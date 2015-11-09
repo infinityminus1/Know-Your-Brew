@@ -52,10 +52,7 @@ public class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<S
     protected void onPostExecute(List<HashMap<String, String>> list) {
         //access mapList by setters?
 
-
-
         //access to googleMap bc passing it along
-        //Refactor and pull from activity in Map.onMapReady()
         googleMap.clear();
         for (int i = 0; i < list.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
