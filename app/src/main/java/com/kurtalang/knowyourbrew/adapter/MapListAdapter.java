@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.kurtalang.knowyourbrew.R;
 import com.kurtalang.knowyourbrew.model.PlaceItem;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,12 +25,16 @@ public class MapListAdapter extends RecyclerView.Adapter<MapListAdapter.ViewHold
     List<PlaceItem> data = Collections.emptyList();
     Context mContext;
     private LayoutInflater inflater;
+    List<PlaceItem> placeItems;
 
-    // 2
+
     public MapListAdapter(Context context, List<PlaceItem> data) {
         this.mContext = context;
         inflater = LayoutInflater.from(context);
         this.data = data;
+
+        placeItems = new ArrayList<PlaceItem>();
+
     }
 
     public void addList(List<PlaceItem> data){
@@ -52,10 +57,9 @@ public class MapListAdapter extends RecyclerView.Adapter<MapListAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return (data == null) ? 0 : data.size();
     }
 
-    // 3
     public class ViewHolder extends RecyclerView.ViewHolder {
         public RelativeLayout placeHolder;
         public TextView placeAddress;

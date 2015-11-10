@@ -19,6 +19,7 @@ import com.kurtalang.knowyourbrew.adapter.MapListAdapter;
 import com.kurtalang.knowyourbrew.model.PlaceItem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,41 +52,40 @@ public class MapList extends Fragment {
         //RecyclerView needs a LayoutManager to manage the positioning of its items.
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
-        //adapter = new MapListAdapter(this.getActivity(), getData()); //TODO: write get data func
-        //recyclerView.setAdapter(adapter);
+        adapter = new MapListAdapter(this.getActivity(), initializeData()); //TODO: write get data func
+        recyclerView.setAdapter(adapter);
 
         return rootview;
     }
 
+    public void updateAdapter(List<HashMap<String, String>> placeList){
 
-   /* public List<PlaceItem> getData() {
-        List<PlaceItem> data = new ArrayList<>();
-        List<HashMap<String, String>> googlePlaceList;
-
-        googlePlaceList = ((Main2Activity)this.getActivity()).getGooglePlacesList();
-
-        //TODO: googlePlaceIdList might be null bc of AsyncTask not finishing...
-
-
-        // Parse through googlePlaceList and prepare data
-        for (int i = 0; i < googlePlaceList.size(); i++) {
-            HashMap<String, String> googlePlace = googlePlaceList.get(i);
-
+        List<PlaceItem> list = new ArrayList<>();
+        //update data in adapter with placeList
+        for (int i = 0; i < placeList.size(); i++) {
+            HashMap<String, String> googlePlace = placeList.get(i);
             PlaceItem placeItem = new PlaceItem();
-
             placeItem.setName(googlePlace.get("place_name"));
-            //placeItem.setOpen(Boolean.parseBoolean(googlePlace.get("open_now")));
-            //placeItem.setPrice_level(Integer.parseInt(googlePlace.get("price_level")));
-            //placeItem.setRating(Float.parseFloat(googlePlace.get("rating")));
-            placeItem.setId(googlePlace.get("place_id"));
             placeItem.setVicinity(googlePlace.get("vicinity"));
-            placeItem.setLatitude(Double.parseDouble(googlePlace.get("lat")));
-            placeItem.setLongitude(Double.parseDouble(googlePlace.get("lng")));
 
-            data.add(placeItem);
+            System.out.println("******FROM UPDATE ADAPTER" + placeItem);
+            list.add(placeItem);
         }
-        return data;
-    } */
+        adapter.addList(list);
+        adapter.notifyDataSetChanged();
+    }
+    private List<PlaceItem> initializeData() {
+        List<PlaceItem> placeList = new ArrayList<>();
+
+        PlaceItem first = new PlaceItem();
+        first.setName("first name");
+        first.setVicinity("First Vicinity");
+
+        placeList.add(first);
+
+        return placeList;
+    }
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {

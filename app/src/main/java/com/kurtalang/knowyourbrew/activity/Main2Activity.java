@@ -33,10 +33,11 @@ import com.kurtalang.knowyourbrew.map.GooglePlacesReadTask;
 import com.kurtalang.knowyourbrew.map.Map;
 import com.kurtalang.knowyourbrew.map.MapList;
 import com.kurtalang.knowyourbrew.map.OnTaskCompleted;
+import com.kurtalang.knowyourbrew.map.PlaceListReceived;
 import com.kurtalang.knowyourbrew.map.ReadResponse;
 
 public class Main2Activity extends AppCompatActivity
-        implements LocationListener {
+        implements LocationListener, PlaceListReceived {
 
     double latitude = 0;
     double longitude = 0;
@@ -58,8 +59,6 @@ public class Main2Activity extends AppCompatActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-
-
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -69,7 +68,11 @@ public class Main2Activity extends AppCompatActivity
         viewPager.setAdapter(adapter);
     }
 
-
+    @Override
+    public void sendPlaceList(List<HashMap<String, String>> result) {
+        MapList mapListFragment = (MapList) getFragmentManager().findFragmentById(R.id.map_list_fragment);
+        mapListFragment.updateAdapter(result);
+    }
 
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

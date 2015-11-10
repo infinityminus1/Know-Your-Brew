@@ -21,6 +21,15 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, List<HashMa
     String googlePlacesData = null;
     GoogleMap googleMap;
     List<HashMap<String, String>> googlePlacesList = null; //Todo: make this a class or something maplist can access
+    public ReadResponse delegate = null;
+
+    public GooglePlacesReadTask(){
+
+    }
+
+    public GooglePlacesReadTask(ReadResponse delegate){
+        this.delegate = delegate;
+    }
 
     @Override
     protected List<HashMap<String, String>> doInBackground(Object... inputObj) {
@@ -46,20 +55,24 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, List<HashMa
     protected void onPostExecute(List<HashMap<String, String>> list) {
         //access mapList by setters?
 
-        googleMap.clear();
-        for (int i = 0; i < list.size(); i++) {
-            MarkerOptions markerOptions = new MarkerOptions();
-            HashMap<String, String> googlePlace = list.get(i);
-            double lat = Double.parseDouble(googlePlace.get("lat"));
-            double lng = Double.parseDouble(googlePlace.get("lng"));
-            //BitmapDescriptor icon = googlePlace.get("icon");
-            String placeName = googlePlace.get("place_name");
-            String PlaceID = googlePlace.get("place_id");
-            String vicinity = googlePlace.get("vicinity");
-            LatLng latLng = new LatLng(lat, lng);
-            markerOptions.position(latLng);
-            markerOptions.title(PlaceID + placeName + " : " + vicinity);
-            googleMap.addMarker(markerOptions);
-        }
+        delegate.processFinish(list, googleMap); //set markers in Map fragment
+
+        /*googleMap.clear();
+        if (list != null) {
+            for (int i = 0; i < list.size(); i++) {
+                MarkerOptions markerOptions = new MarkerOptions();
+                HashMap<String, String> googlePlace = list.get(i);
+                double lat = Double.parseDouble(googlePlace.get("lat"));
+                double lng = Double.parseDouble(googlePlace.get("lng"));
+                //BitmapDescriptor icon = googlePlace.get("icon");
+                String placeName = googlePlace.get("place_name");
+                String PlaceID = googlePlace.get("place_id");
+                String vicinity = googlePlace.get("vicinity");
+                LatLng latLng = new LatLng(lat, lng);
+                markerOptions.position(latLng);
+                markerOptions.title(PlaceID + placeName + " : " + vicinity);
+                googleMap.addMarker(markerOptions);
+            }
+        }*/
     }
 }

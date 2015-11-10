@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.kurtalang.knowyourbrew.R;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -51,7 +52,8 @@ import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 
 
 public class Map extends Fragment
-        implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
+        implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener, LocationListener,
+                    ReadResponse{
 
     private MapFragment mMapFragment;
     protected GoogleApiClient mGoogleApiClient; //Provides the entry point to Google Play services.
@@ -62,8 +64,22 @@ public class Map extends Fragment
     private int PROXIMITY_RADIUS = 5000;
     private static final String GOOGLE_API_KEY = "AIzaSyAq9qqBbHYqKUs0EmX6-VQjyAwD97g8uK0";
     public static final String TYPE_CAFE = "cafe";
+    GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
+    List<HashMap<String, String>> result;
 
+    PlaceListReceived mCallback;
 
+    @Override
+    public void onAttach(Activity a) {
+        super.onAttach(a);
+        mCallback = (PlaceListReceived) a;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        googlePlacesReadTask.delegate = this;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -80,19 +96,6 @@ public class Map extends Fragment
         mMapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mMapFragment.getMapAsync(this);
 
-        /*mMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_frag);
-        if (mMapFragment == null) {
-            System.out.println("***********MappFragg NULLLLLL!!!!");
-        }
-        mMapFragment.getMapAsync(this);
-
-
-        FragmentManager fm = getChildFragmentManager();
-        mMapFragment =  SupportMapFragment.newInstance();
-        mMapFragment.getMapAsync(this);
-        fm.beginTransaction().replace(R.id.map, mMapFragment).commit();
-        */
-
         btnFind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,12 +105,10 @@ public class Map extends Fragment
             }
         });
 
-        // Kick off the process of building a GoogleApiClient and requesting the LocationServices
-        // API.
+        // Kick off the process of building a GoogleApiClient and requesting the LocationServices API.
         buildGoogleApiClient();
 
         return rootView;
-
     }
 
     private void findCafesJson() {
@@ -117,8 +118,6 @@ public class Map extends Fragment
         googlePlacesUrl.append("&types=" + TYPE_CAFE);
         googlePlacesUrl.append("&key=" + GOOGLE_API_KEY);
 
-
-        GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
         Object[] toPass = new Object[2];
         toPass[0] = mMap;
         toPass[1] = googlePlacesUrl.toString();
@@ -127,12 +126,6 @@ public class Map extends Fragment
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
-        System.out.println("**********OnMapReadu!!!!!!!!!!!!!!!!!!");
-        System.out.println("**********OnMapReadu!!!!!!!!!!!!!!!!!!");
-        System.out.println("**********OnMapReadu!!!!!!!!!!!!!!!!!!");
-        System.out.println("**********OnMapReadu!!!!!!!!!!!!!!!!!!");
-
 
         mMap = googleMap;
         mMap.addMarker(new MarkerOptions()
@@ -146,13 +139,6 @@ public class Map extends Fragment
         Criteria criteria = new Criteria();
         String bestProvider = locationManager.getBestProvider(criteria, true);
         if (ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         Location location = locationManager.getLastKnownLocation(bestProvider);
@@ -175,19 +161,21 @@ public class Map extends Fragment
 
     }
 
-//    /* Returned value when AsyncTask is done. */
-//    @Override
-//    public void processFinish(List<HashMap<String, String>> output) {
-//        setMarkers(output);
-//    }
+    /* Returned value when AsyncTask is done. */
+    @Override
+    public void processFinish(List<HashMap<String, String>> output, GoogleMap googleMap) {
+        this.result = output;
+        //mCallback.sendPlaceList(output);
+        //(Main2Activity)getActivity().sendPlaceList(output);
+        setMarkers(output, googleMap);
 
+    }
 
-    //called from main2 after asyncTask is done.
     public void setMarkers(List<HashMap<String, String>> list, GoogleMap googleMap){
 
         /*List<HashMap<String, String>> list = ((Main2Activity)this.getActivity()).getGooglePlacesList();*/
 
-        this.mMap.clear();
+        googleMap.clear();
         for (int i = 0; i < list.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
             HashMap<String, String> googlePlace = list.get(i);
@@ -201,21 +189,15 @@ public class Map extends Fragment
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
             markerOptions.title(PlaceID + placeName + " : " + vicinity);
-            this.mMap.addMarker(markerOptions);
+            googleMap.addMarker(markerOptions);
         }
 
     }
 
+    /****************************** Extra Stuff *******************************/
+
     @Override
     public void onLocationChanged(Location location) {
-//
-//        latitude = location.getLatitude();
-//        longitude = location.getLongitude();
-//
-//        LatLng latLng = new LatLng(latitude, longitude);
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-//        mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
-
 
     }
 
@@ -236,6 +218,11 @@ public class Map extends Fragment
             GooglePlayServicesUtil.getErrorDialog(status, this.getActivity(), 0).show();
             return false;
         }
+    }
+    @Override
+    public void onDetach() {
+        mCallback = null; // => avoid leaking
+        super.onDetach();
     }
     @Override
     public void onStart() {

@@ -1,5 +1,8 @@
 package com.kurtalang.knowyourbrew.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Model class for place data
  *
@@ -17,9 +20,6 @@ public class PlaceItem {
     private double latitude;
     private double longitude;
 
-    public PlaceItem() {
-
-    }
 
     /* NAME */
     public String getName() {return name;}
